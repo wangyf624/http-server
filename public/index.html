@@ -1,12 +1,307 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>node.js http server</title>
-  </head>
-  <body>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <meta name="referrer" content="no-referrer">
+        <title>数据可视化 | DataVisualization</title>
 
-    <h1>Serving up static files like they were turtles strapped to rockets.</h1>
 
-    <img src="./img/turtle.png"/>
-  </body>
+        <link rel="stylesheet" href="/static/api/ranking-data/src/stylesheet.css?v=1.6.9">
+        <link rel="stylesheet" href="/static/app/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/app/css/bootstrap/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/app/css/task.css?v=1.6.9">
+        <script src="/static/api/d3/d3.v5.min.js"></script>
+        <script src="/static/api/vue/vue.min.js"></script>
+    </head>
+
+    <style>
+                    html {zoom: 100%;}
+                    .growth {font-size:40pt;}
+                    .topLabel {font-size:40pt;}
+                    .dateLabel {font-size:60pt;}
+                    .barInfo {font-size:24pt;}
+                    .value {font-size:20pt;}
+                    .days {font-size:40pt;}
+                    #svg-box .label {font-size:16pt;}
+                    .label-number {font-size:16pt;}
+                    .label-number {fill:#5c5c5c;}
+        
+
+        #tips p {font-size: 20px;color: #5C5C5C;font-weight: bold;}
+
+                    html {width: 100%;height: 100%;}
+            body {
+                display: inline-block !important;
+                position: relative;
+                width: 100%;
+                height: 100%;
+            }
+        
+
+
+        .fullscreenvideo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: 100%;
+            height: auto;
+            z-index: -100;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+            -webkit-transition: 1s opacity;
+            transition: 1s opacity;
+        }
+        .videocontainer{
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -100;
+        }
+
+                    .videocontainer:before{
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                display: block;
+                z-index: -1;
+                top: 0;
+                left: 0;
+                background: rgba(25,29,34,.80);
+            }
+            </style>
+
+
+    <body>
+        
+
+        <center id="svg-box">
+            <svg width="1800" height="900" ></svg>
+
+                    </center>
+
+
+
+        
+        <div id="tips" >
+
+        </div>
+
+        <div id="app"></div>
+    </body>
+
+<script type="text/javascript" src="/static/app/js/jquery-2.1.4.min.js"></script>
+<script src="/static/app/js/dialog/jquery.artDialog.js?skin=opera" type="text/javascript"></script>
+<script src="/static/app/js/dialog/plugins/iframeTools.js" type="text/javascript"></script>
+<script src="/static/app/js/function.js?v=1.6.9" type="text/javascript"></script>
+<script src="/static/app/js/md5.js?v=1.6.9" type="text/javascript"></script>
+<script src="/static/app/js/moment.js?v=1.6.9" type="text/javascript"></script>
+
+<script src="/static/api/ranking-data/src/config.js?v=1.6.9"></script>
+<script src="/static/api/ranking-data/src/imgs.js?v=1.6.9"></script>
+    <script src="/static/api/ranking-data/src/visual.js?v=1.6.9"></script>
+
+
+<script>
+
+    window.onload = function () {
+        var taskdata = {"task":{"task_id":"2022014666R6E56t05","task_source":2,"display_genre":1,"name":"20220105","keywords":["\u738b\u7389\u4e30","\u5f20\u6248\u822a","\u51b7\u6cbb\u6c11","\u6587\u5353\u51e1","\u674e\u5a01","\u674e\u4f73\u5b87","\u8d75\u632f\u6c5f","\u8303\u660e","\u9ec4\u5e06","\u6d2a\u950b"],"style":{"use_type_info":"1","show_x_tick":"1","use_counter":"0","use_img":"0","showLabel":"1","rounded_rectangle":"1","barTextLeft":"0","barinfo_text_show":"false","enter_from_0":"1","animation":"linear","wait_start_time":"1","global_page_zoom":"100","global_page_font":"","max_number":"20","interval_time":"1","global_width":"1800","global_height":"900","left_margin":"250","right_margin":"150","top_margin":"180","bottom_margin":"0","itemLabel":"","typeLabel":"1\u4f4d\u8cde\u91d1\u4e8c\u4e07\u5186","topTextSize":"40","topTextColorValue":"","showTopLabelText":"1","topLabelSize":"40","topLabelTextColorValue":"","item_x":"250","text_y":"-50","background_color":"#ffffff","global_background_image_position":"body","global_background_image":"","global_background_image_opacity":"0.35","global_background_video":"","global_background_video_opacity":"0.8","useCounterTextSize":"40","useCounterTextColor":"","use_img_type":"circle","use_img_position":"left","circle_x_offset":"-22","circle_y_offset":"13","circle_border_width":"4","circle_radius":"20","use_img_rect_width":"50","use_img_rect_height":"50","use_img_rect_rx_size":"0","showLabelTextSize":"16","showLabelTextColor":"","showLabelText_x_offset":"0","showLabelText_y_offset":"20","barinfo_ranks":"0","barRanksTextSize":"16","barRanksTextColorValue":"#5c5c5c","barinfo_ranks_x_offset":"-60","barinfo_ranks_y_offset":"20","dateLabel_switch":"1","dateLabelSize":"60","dateLabelTextColor":"","dateLabel_x":"0","dateLabel_y":"0","timeFormat":"%Y-%m-%d","bar_height":"26","barinfo_rounded_rectangle_size":"13","dataBarSize":"24","dataBarTextColor":"","barinfo_text_y_offset":"2","barinfo_text_x_offset":"0","display_barInfo":"0","playBarNumberSize":"20","playBarNumberTextColor":"","play_bar_number_x":"0","play_bar_number_y":"22","postfix":"","global_formats":"0","auto_sort":"0","time_supplement":"0","reverse":"0","big_value":"0"}},"style":{"use_type_info":"1","show_x_tick":"1","use_counter":"0","use_img":"0","showLabel":"1","rounded_rectangle":"1","barTextLeft":"0","barinfo_text_show":"false","enter_from_0":"1","animation":"linear","wait_start_time":"1","global_page_zoom":"100","global_page_font":"","max_number":"20","interval_time":"1","global_width":"1800","global_height":"900","left_margin":"250","right_margin":"150","top_margin":"180","bottom_margin":"0","itemLabel":"","typeLabel":"1\u4f4d\u8cde\u91d1\u4e8c\u4e07\u5186","topTextSize":"40","topTextColorValue":"","showTopLabelText":"1","topLabelSize":"40","topLabelTextColorValue":"","item_x":"250","text_y":"-50","background_color":"#ffffff","global_background_image_position":"body","global_background_image":"","global_background_image_opacity":"0.35","global_background_video":"","global_background_video_opacity":"0.8","useCounterTextSize":"40","useCounterTextColor":"","use_img_type":"circle","use_img_position":"left","circle_x_offset":"-22","circle_y_offset":"13","circle_border_width":"4","circle_radius":"20","use_img_rect_width":"50","use_img_rect_height":"50","use_img_rect_rx_size":"0","showLabelTextSize":"16","showLabelTextColor":"","showLabelText_x_offset":"0","showLabelText_y_offset":"20","barinfo_ranks":"0","barRanksTextSize":"16","barRanksTextColorValue":"#5c5c5c","barinfo_ranks_x_offset":"-60","barinfo_ranks_y_offset":"20","dateLabel_switch":"1","dateLabelSize":"60","dateLabelTextColor":"","dateLabel_x":"0","dateLabel_y":"0","timeFormat":"%Y-%m-%d","bar_height":"26","barinfo_rounded_rectangle_size":"13","dataBarSize":"24","dataBarTextColor":"","barinfo_text_y_offset":"2","barinfo_text_x_offset":"0","display_barInfo":"0","playBarNumberSize":"20","playBarNumberTextColor":"","play_bar_number_x":"0","play_bar_number_y":"22","postfix":"","global_formats":"0","auto_sort":"0","time_supplement":"0","reverse":"0","big_value":"0"},"tips":[],"data":[{"name":"\u738b\u7389\u4e30","type":"","value":"0","date":"2021-12-04"},{"name":"\u738b\u7389\u4e30","type":"","value":"0","date":"2021-12-05"},{"name":"\u738b\u7389\u4e30","type":"","value":"0","date":"2021-12-06"},{"name":"\u738b\u7389\u4e30","type":"","value":"0","date":"2021-12-07"},{"name":"\u738b\u7389\u4e30","type":"","value":"0","date":"2021-12-08"},{"name":"\u738b\u7389\u4e30","type":"","value":"0","date":"2021-12-09"},{"name":"\u738b\u7389\u4e30","type":"","value":"0","date":"2021-12-10"},{"name":"\u738b\u7389\u4e30","type":"","value":"400","date":"2021-12-11"},{"name":"\u738b\u7389\u4e30","type":"","value":"400","date":"2021-12-12"},{"name":"\u738b\u7389\u4e30","type":"","value":"400","date":"2021-12-13"},{"name":"\u738b\u7389\u4e30","type":"","value":"400","date":"2021-12-14"},{"name":"\u738b\u7389\u4e30","type":"","value":"400","date":"2021-12-15"},{"name":"\u738b\u7389\u4e30","type":"","value":"900","date":"2021-12-16"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-17"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-18"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-19"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-20"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-21"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-22"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-23"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-24"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-25"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-26"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-27"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-28"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-29"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-30"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2021-12-31"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2022-01-01"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2022-01-02"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2022-01-03"},{"name":"\u738b\u7389\u4e30","type":"","value":"1750","date":"2022-01-04"},{"name":"\u5f20\u6248\u822a","type":"","value":"0","date":"2021-12-04"},{"name":"\u5f20\u6248\u822a","type":"","value":"0","date":"2021-12-05"},{"name":"\u5f20\u6248\u822a","type":"","value":"0","date":"2021-12-06"},{"name":"\u5f20\u6248\u822a","type":"","value":"0","date":"2021-12-07"},{"name":"\u5f20\u6248\u822a","type":"","value":"0","date":"2021-12-08"},{"name":"\u5f20\u6248\u822a","type":"","value":"0","date":"2021-12-09"},{"name":"\u5f20\u6248\u822a","type":"","value":"600","date":"2021-12-10"},{"name":"\u5f20\u6248\u822a","type":"","value":"2750","date":"2021-12-11"},{"name":"\u5f20\u6248\u822a","type":"","value":"2750","date":"2021-12-12"},{"name":"\u5f20\u6248\u822a","type":"","value":"2750","date":"2021-12-13"},{"name":"\u5f20\u6248\u822a","type":"","value":"2750","date":"2021-12-14"},{"name":"\u5f20\u6248\u822a","type":"","value":"2975","date":"2021-12-15"},{"name":"\u5f20\u6248\u822a","type":"","value":"2975","date":"2021-12-16"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-17"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-18"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-19"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-20"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-21"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-22"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-23"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-24"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-25"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-26"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-27"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-28"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-29"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-30"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2021-12-31"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2022-01-01"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2022-01-02"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2022-01-03"},{"name":"\u5f20\u6248\u822a","type":"","value":"4450","date":"2022-01-04"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"0","date":"2021-12-04"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"1600","date":"2021-12-05"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"1600","date":"2021-12-06"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"1600","date":"2021-12-07"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"3100","date":"2021-12-08"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"3650","date":"2021-12-09"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"4400","date":"2021-12-10"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"4400","date":"2021-12-11"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"4700","date":"2021-12-12"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"5950","date":"2021-12-13"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"9550","date":"2021-12-14"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"13450","date":"2021-12-15"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"15250","date":"2021-12-16"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"16450","date":"2021-12-17"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"19450","date":"2021-12-18"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"22250","date":"2021-12-19"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"22250","date":"2021-12-20"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"22250","date":"2021-12-21"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"22250","date":"2021-12-22"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"26750","date":"2021-12-23"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"26750","date":"2021-12-24"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"26750","date":"2021-12-25"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"26750","date":"2021-12-26"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"26750","date":"2021-12-27"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"26750","date":"2021-12-28"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"29300","date":"2021-12-29"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"29300","date":"2021-12-30"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"29300","date":"2021-12-31"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"32400","date":"2022-01-01"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"32400","date":"2022-01-02"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"32400","date":"2022-01-03"},{"name":"\u51b7\u6cbb\u6c11","type":"","value":"38150","date":"2022-01-04"},{"name":"\u6587\u5353\u51e1","type":"","value":"25","date":"2021-12-04"},{"name":"\u6587\u5353\u51e1","type":"","value":"25","date":"2021-12-05"},{"name":"\u6587\u5353\u51e1","type":"","value":"25","date":"2021-12-06"},{"name":"\u6587\u5353\u51e1","type":"","value":"25","date":"2021-12-07"},{"name":"\u6587\u5353\u51e1","type":"","value":"25","date":"2021-12-08"},{"name":"\u6587\u5353\u51e1","type":"","value":"25","date":"2021-12-09"},{"name":"\u6587\u5353\u51e1","type":"","value":"2925","date":"2021-12-10"},{"name":"\u6587\u5353\u51e1","type":"","value":"3000","date":"2021-12-11"},{"name":"\u6587\u5353\u51e1","type":"","value":"3000","date":"2021-12-12"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-13"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-14"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-15"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-16"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-17"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-18"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-19"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-20"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-21"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-22"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-23"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-24"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-25"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-26"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-27"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-28"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-29"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-30"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2021-12-31"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2022-01-01"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2022-01-02"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2022-01-03"},{"name":"\u6587\u5353\u51e1","type":"","value":"4000","date":"2022-01-04"},{"name":"\u674e\u5a01","type":"","value":"4000","date":"2021-12-04"},{"name":"\u674e\u5a01","type":"","value":"4000","date":"2021-12-05"},{"name":"\u674e\u5a01","type":"","value":"4000","date":"2021-12-06"},{"name":"\u674e\u5a01","type":"","value":"4000","date":"2021-12-07"},{"name":"\u674e\u5a01","type":"","value":"6975","date":"2021-12-08"},{"name":"\u674e\u5a01","type":"","value":"7175","date":"2021-12-09"},{"name":"\u674e\u5a01","type":"","value":"7175","date":"2021-12-10"},{"name":"\u674e\u5a01","type":"","value":"8050","date":"2021-12-11"},{"name":"\u674e\u5a01","type":"","value":"8050","date":"2021-12-12"},{"name":"\u674e\u5a01","type":"","value":"8050","date":"2021-12-13"},{"name":"\u674e\u5a01","type":"","value":"8050","date":"2021-12-14"},{"name":"\u674e\u5a01","type":"","value":"8050","date":"2021-12-15"},{"name":"\u674e\u5a01","type":"","value":"10350","date":"2021-12-16"},{"name":"\u674e\u5a01","type":"","value":"11350","date":"2021-12-17"},{"name":"\u674e\u5a01","type":"","value":"11350","date":"2021-12-18"},{"name":"\u674e\u5a01","type":"","value":"11350","date":"2021-12-19"},{"name":"\u674e\u5a01","type":"","value":"11350","date":"2021-12-20"},{"name":"\u674e\u5a01","type":"","value":"13400","date":"2021-12-21"},{"name":"\u674e\u5a01","type":"","value":"13400","date":"2021-12-22"},{"name":"\u674e\u5a01","type":"","value":"14600","date":"2021-12-23"},{"name":"\u674e\u5a01","type":"","value":"18850","date":"2021-12-24"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2021-12-25"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2021-12-26"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2021-12-27"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2021-12-28"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2021-12-29"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2021-12-30"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2021-12-31"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2022-01-01"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2022-01-02"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2022-01-03"},{"name":"\u674e\u5a01","type":"","value":"19550","date":"2022-01-04"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-04"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-05"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-06"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-07"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-08"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-09"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-10"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-11"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-12"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-13"},{"name":"\u674e\u4f73\u5b87","type":"","value":"0","date":"2021-12-14"},{"name":"\u674e\u4f73\u5b87","type":"","value":"1500","date":"2021-12-15"},{"name":"\u674e\u4f73\u5b87","type":"","value":"1550","date":"2021-12-16"},{"name":"\u674e\u4f73\u5b87","type":"","value":"1550","date":"2021-12-17"},{"name":"\u674e\u4f73\u5b87","type":"","value":"1550","date":"2021-12-18"},{"name":"\u674e\u4f73\u5b87","type":"","value":"1550","date":"2021-12-19"},{"name":"\u674e\u4f73\u5b87","type":"","value":"1550","date":"2021-12-20"},{"name":"\u674e\u4f73\u5b87","type":"","value":"2550","date":"2021-12-21"},{"name":"\u674e\u4f73\u5b87","type":"","value":"2550","date":"2021-12-22"},{"name":"\u674e\u4f73\u5b87","type":"","value":"2550","date":"2021-12-23"},{"name":"\u674e\u4f73\u5b87","type":"","value":"2550","date":"2021-12-24"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2021-12-25"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2021-12-26"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2021-12-27"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2021-12-28"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2021-12-29"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2021-12-30"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2021-12-31"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2022-01-01"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2022-01-02"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2022-01-03"},{"name":"\u674e\u4f73\u5b87","type":"","value":"3550","date":"2022-01-04"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"0","date":"2021-12-04"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"125","date":"2021-12-05"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"125","date":"2021-12-06"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"125","date":"2021-12-07"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"125","date":"2021-12-08"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"550","date":"2021-12-09"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"2150","date":"2021-12-10"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"4750","date":"2021-12-11"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"4750","date":"2021-12-12"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"4750","date":"2021-12-13"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"4750","date":"2021-12-14"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"4750","date":"2021-12-15"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"4750","date":"2021-12-16"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"4850","date":"2021-12-17"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"6950","date":"2021-12-18"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"6950","date":"2021-12-19"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"6950","date":"2021-12-20"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"6950","date":"2021-12-21"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"6950","date":"2021-12-22"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"6950","date":"2021-12-23"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"6950","date":"2021-12-24"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8125","date":"2021-12-25"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8125","date":"2021-12-26"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8125","date":"2021-12-27"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8125","date":"2021-12-28"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8125","date":"2021-12-29"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8125","date":"2021-12-30"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8125","date":"2021-12-31"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"8625","date":"2022-01-01"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"14875","date":"2022-01-02"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"26355","date":"2022-01-03"},{"name":"\u8d75\u632f\u6c5f","type":"","value":"32425","date":"2022-01-04"},{"name":"\u8303\u660e","type":"","value":"0","date":"2021-12-04"},{"name":"\u8303\u660e","type":"","value":"0","date":"2021-12-05"},{"name":"\u8303\u660e","type":"","value":"4275","date":"2021-12-06"},{"name":"\u8303\u660e","type":"","value":"4275","date":"2021-12-07"},{"name":"\u8303\u660e","type":"","value":"4775","date":"2021-12-08"},{"name":"\u8303\u660e","type":"","value":"5125","date":"2021-12-09"},{"name":"\u8303\u660e","type":"","value":"10675","date":"2021-12-10"},{"name":"\u8303\u660e","type":"","value":"10800","date":"2021-12-11"},{"name":"\u8303\u660e","type":"","value":"14625","date":"2021-12-12"},{"name":"\u8303\u660e","type":"","value":"15150","date":"2021-12-13"},{"name":"\u8303\u660e","type":"","value":"18700","date":"2021-12-14"},{"name":"\u8303\u660e","type":"","value":"30050","date":"2021-12-15"},{"name":"\u8303\u660e","type":"","value":"30050","date":"2021-12-16"},{"name":"\u8303\u660e","type":"","value":"31275","date":"2021-12-17"},{"name":"\u8303\u660e","type":"","value":"32500","date":"2021-12-18"},{"name":"\u8303\u660e","type":"","value":"32500","date":"2021-12-19"},{"name":"\u8303\u660e","type":"","value":"33425","date":"2021-12-20"},{"name":"\u8303\u660e","type":"","value":"34650","date":"2021-12-21"},{"name":"\u8303\u660e","type":"","value":"44375","date":"2021-12-22"},{"name":"\u8303\u660e","type":"","value":"44375","date":"2021-12-23"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-24"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-25"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-26"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-27"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-28"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-29"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-30"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2021-12-31"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2022-01-01"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2022-01-02"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2022-01-03"},{"name":"\u8303\u660e","type":"","value":"52200","date":"2022-01-04"},{"name":"\u9ec4\u5e06","type":"","value":"0","date":"2021-12-04"},{"name":"\u9ec4\u5e06","type":"","value":"1050","date":"2021-12-05"},{"name":"\u9ec4\u5e06","type":"","value":"1050","date":"2021-12-06"},{"name":"\u9ec4\u5e06","type":"","value":"1050","date":"2021-12-07"},{"name":"\u9ec4\u5e06","type":"","value":"1050","date":"2021-12-08"},{"name":"\u9ec4\u5e06","type":"","value":"1050","date":"2021-12-09"},{"name":"\u9ec4\u5e06","type":"","value":"1050","date":"2021-12-10"},{"name":"\u9ec4\u5e06","type":"","value":"3800","date":"2021-12-11"},{"name":"\u9ec4\u5e06","type":"","value":"3800","date":"2021-12-12"},{"name":"\u9ec4\u5e06","type":"","value":"3800","date":"2021-12-13"},{"name":"\u9ec4\u5e06","type":"","value":"3900","date":"2021-12-14"},{"name":"\u9ec4\u5e06","type":"","value":"4000","date":"2021-12-15"},{"name":"\u9ec4\u5e06","type":"","value":"4300","date":"2021-12-16"},{"name":"\u9ec4\u5e06","type":"","value":"4300","date":"2021-12-17"},{"name":"\u9ec4\u5e06","type":"","value":"4300","date":"2021-12-18"},{"name":"\u9ec4\u5e06","type":"","value":"4300","date":"2021-12-19"},{"name":"\u9ec4\u5e06","type":"","value":"7350","date":"2021-12-20"},{"name":"\u9ec4\u5e06","type":"","value":"7350","date":"2021-12-21"},{"name":"\u9ec4\u5e06","type":"","value":"7350","date":"2021-12-22"},{"name":"\u9ec4\u5e06","type":"","value":"7900","date":"2021-12-23"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-24"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-25"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-26"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-27"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-28"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-29"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-30"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2021-12-31"},{"name":"\u9ec4\u5e06","type":"","value":"8400","date":"2022-01-01"},{"name":"\u9ec4\u5e06","type":"","value":"12725","date":"2022-01-02"},{"name":"\u9ec4\u5e06","type":"","value":"12725","date":"2022-01-03"},{"name":"\u9ec4\u5e06","type":"","value":"18375","date":"2022-01-04"},{"name":"\u6d2a\u950b","type":"","value":"0","date":"2021-12-04"},{"name":"\u6d2a\u950b","type":"","value":"0","date":"2021-12-05"},{"name":"\u6d2a\u950b","type":"","value":"0","date":"2021-12-06"},{"name":"\u6d2a\u950b","type":"","value":"0","date":"2021-12-07"},{"name":"\u6d2a\u950b","type":"","value":"0","date":"2021-12-08"},{"name":"\u6d2a\u950b","type":"","value":"0","date":"2021-12-09"},{"name":"\u6d2a\u950b","type":"","value":"0","date":"2021-12-10"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-11"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-12"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-13"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-14"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-15"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-16"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-17"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-18"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-19"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-20"},{"name":"\u6d2a\u950b","type":"","value":"1400","date":"2021-12-21"},{"name":"\u6d2a\u950b","type":"","value":"1600","date":"2021-12-22"},{"name":"\u6d2a\u950b","type":"","value":"1600","date":"2021-12-23"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-24"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-25"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-26"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-27"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-28"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-29"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-30"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2021-12-31"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2022-01-01"},{"name":"\u6d2a\u950b","type":"","value":"2600","date":"2022-01-02"},{"name":"\u6d2a\u950b","type":"","value":"3250","date":"2022-01-03"},{"name":"\u6d2a\u950b","type":"","value":"3250","date":"2022-01-04"}]};
+        var app = new Vue({
+            el: '#app',
+            data: {
+                title:'',
+                task:{},
+                data:[]
+            },
+            created:function (){
+                var $this = this;
+                if (!taskdata.hasOwnProperty("task")) {
+                    tips.alert('任务不存在 / 数据未准备好' , function () {
+                        history.go(-1);
+                    });
+                    return;
+                }
+                if (!taskdata.hasOwnProperty("data")) {
+                    tips.alert('数据异常' , function () {
+                        history.go(-1);
+                    });
+                    console.log(taskdata);
+                    return;
+                }
+
+                $this.task = taskdata['task'];
+                $this.title = taskdata['task']['name'];
+                $this.data = taskdata['data'];
+
+                $("title").text($this.title + '|数据可视化|DataVisualization');
+
+                //任务自定义配置
+                var taskconfig = taskdata['task']['style'];
+
+                if (taskconfig['global_width']) {
+                    $("#svg-box svg").css({width:taskconfig['global_width']}).attr('width' , taskconfig['global_width']);
+                }
+                if (taskconfig['global_height']) {
+                    $("#svg-box svg").css({height:taskconfig['global_height']}).attr('height' , taskconfig['global_height']);
+                }
+                if (!taskconfig['background_color'] || !$.trim(taskconfig['background_color'])) {
+                    taskconfig['background_color'] = '#FFFFFF';
+                }
+                if (taskconfig['global_formats']) {
+                    taskconfig['format'] = ',.' +parseInt(taskconfig['global_formats'])+ 'f';
+                }
+                //图片背景处理
+                if (taskconfig['global_background_image'] && $.trim(taskconfig['global_background_image'])) {
+                    taskconfig['background_color'] = '#FFFFFF';
+                    //设置背景图
+                    // $("#svg-box").css({background:`url(${taskconfig['global_background_image']})`,backgroundSize:'cover'});
+                }
+
+                //覆盖原始配置
+                if (typeof taskconfig == 'object') {
+                    if (taskconfig['dateLabel_x'] == 0) {
+                        taskconfig['dateLabel_x'] = null;
+                    }
+                    if (taskconfig['dateLabel_y'] == 0) {
+                        taskconfig['dateLabel_y'] = null;
+                    }
+                    //类型强制
+                    if (taskconfig.hasOwnProperty('big_value')) taskconfig.big_value = parseInt(taskconfig.big_value);
+                    if (taskconfig.hasOwnProperty('show_x_tick')) taskconfig.show_x_tick = parseInt(taskconfig.show_x_tick);
+
+                    if (taskconfig.hasOwnProperty('reverse')) taskconfig.reverse = parseInt(taskconfig.reverse);
+                    if (taskconfig.hasOwnProperty('auto_sort')) taskconfig.auto_sort = parseInt(taskconfig.auto_sort);
+                    if (taskconfig.hasOwnProperty('time_supplement')) taskconfig.time_supplement = parseInt(taskconfig.time_supplement);
+                    if (taskconfig.hasOwnProperty('dateLabel_switch')) taskconfig.dateLabel_switch = parseInt(taskconfig.dateLabel_switch);
+                    if (taskconfig.hasOwnProperty('use_img')) taskconfig.use_img = parseInt(taskconfig.use_img);
+                    if (taskconfig.hasOwnProperty('rounded_rectangle')) taskconfig.rounded_rectangle = parseInt(taskconfig.rounded_rectangle);
+                    if (taskconfig.hasOwnProperty('use_type_info')) taskconfig.use_type_info = parseInt(taskconfig.use_type_info);
+                    if (taskconfig.hasOwnProperty('showLabel')) taskconfig.showLabel = parseInt(taskconfig.showLabel);
+                    if (taskconfig.hasOwnProperty('showLabelText_x_offset')) taskconfig.showLabelText_x_offset = parseInt(taskconfig.showLabelText_x_offset);
+                    if (taskconfig.hasOwnProperty('showLabelText_y_offset')) taskconfig.showLabelText_y_offset = parseInt(taskconfig.showLabelText_y_offset);
+                    if (taskconfig.hasOwnProperty('showTopLabelText')) taskconfig.showTopLabelText = parseInt(taskconfig.showTopLabelText);
+                    if (taskconfig.hasOwnProperty('display_barInfo')) taskconfig.display_barInfo = parseInt(taskconfig.display_barInfo);
+
+                    if (taskconfig.hasOwnProperty('enter_from_0')) taskconfig.enter_from_0 = parseInt(taskconfig.enter_from_0);
+                    if (taskconfig.hasOwnProperty('barTextLeft')) taskconfig.barTextLeft = parseInt(taskconfig.barTextLeft);
+                    if (taskconfig.hasOwnProperty('barinfo_ranks')) taskconfig.barinfo_ranks = parseInt(taskconfig.barinfo_ranks);
+
+                    if (taskconfig.hasOwnProperty('circle_border_width')) taskconfig.circle_border_width = parseInt(taskconfig.circle_border_width) + 'px';
+
+                    //兼容历史设置
+                    if (taskconfig.hasOwnProperty('barinfo_text_show')) {
+                        if (taskconfig.barinfo_text_show === '1' || taskconfig.barinfo_text_show === 1) {
+                            taskconfig.barinfo_text_show = 'name';
+                        } else if (taskconfig.barinfo_text_show === '0' || taskconfig.barinfo_text_show === 0) {
+                            taskconfig.barinfo_text_show = 'false';
+                        }
+                    }
+
+                    for (var k in taskconfig) {
+                        if (String(k).indexOf('global_') == -1) {
+                            config[k] = taskconfig[k];
+                        }
+                    }
+                }
+
+                var taskTips = taskdata['tips'];
+                if (typeof taskTips == 'object') {
+                    $this.initTips(taskTips);
+                }
+
+                //加载图表
+                if ($this.data.length != 0) {
+                    try {
+                        draw($this.data);
+                    } catch (error) {
+                        console.log(error);
+                        tips.alert('异常：' + error);
+                    }
+                }
+            },
+            methods: {
+                initTips:function (tipdata) {
+                    var $this = this;
+                    if (typeof tipdata != 'object') {
+                        return;
+                    }
+                    //init
+                    for (var k in tipdata) {
+                        $this.loadTips(tipdata[k]);
+                    }
+                },
+                loadTips:function (tips) {
+                    if (tips.constructor != Object) {
+                        return;
+                    }
+                    var data = tips.data;
+
+                    tips.x = isNaN(tips.x) ? tips.x : tips.x + 'px';
+                    tips.y = isNaN(tips.y) ? tips.y : tips.y + 'px';
+
+                    var html = '';
+                    if (tips.show_genre == 'follow') {
+                        if (typeof data != 'object') {
+                            return;
+                        }
+
+                        for (var i in data) {
+                            var tid = 'tips_' + hex_md5(tips.field + encodeURIComponent(data[i].key));
+                            var content = data[i].content;
+
+                            if ($.trim(content) == '') {
+                                continue;
+                            }
+
+                            html += '<div class="tips-box '+tid+'" style="position: absolute;top: '+tips.y+';left: '+tips.x+';display: none;">';
+                            switch (tips.genre) {
+                                case 'image':
+                                    html += '<img src="'+$.trim(content)+'" style="'+tips.style+'"/>'
+                                    break;
+                                case 'text':
+                                    html += '<p style="'+tips.style+'">'+content+'</p>'
+                                    break;
+                                case 'richtext': //富文本
+                                    html += '<div style="'+tips.style+'">'+content+'</div>'
+                                    break;
+                            }
+
+                            html += '</div>';
+                        }
+                    } else if (tips.show_genre == 'fixed') {
+                        var tid = '__tips_fixed__';
+                        html += '<div class="'+tid+'" style="position: absolute;top: '+tips.y+';left: '+tips.x+';display: none;">';
+
+                        switch (tips.genre) {
+                            case 'image':
+                                html += '<img src="'+$.trim(tips.content)+'" style="'+tips.style+'"/>'
+                                break;
+                            case 'text':
+                                html += '<p style="'+tips.style+'">'+tips.content+'</p>'
+                                break;
+                            case 'richtext': //富文本
+                                html += '<div style="'+tips.style+'">'+tips.content+'</div>'
+                                break;
+                        }
+
+                        html += '</div>';
+                    }
+
+                    $("#tips").append(html);
+                }
+            }
+        });
+    }
+
+</script>
+
+
+
+
+
+
 </html>
-
